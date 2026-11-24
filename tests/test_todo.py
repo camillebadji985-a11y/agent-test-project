@@ -25,3 +25,9 @@ def test_save_and_load(tmp_path):
     add_task(tasks, "x")
     save_tasks(path, tasks)
     assert load_tasks(path)[0].title == "x"
+
+
+def test_done_unknown_id():
+    tasks = []
+    add_task(tasks, "a")
+    assert mark_done(tasks, 99) is None

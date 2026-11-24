@@ -14,10 +14,13 @@ def add_task(tasks: list[Task], title: str) -> Task:
     return task
 
 
-def mark_done(tasks: list[Task], task_id: int) -> Task:
-    task = [t for t in tasks if t.id == task_id][0]
-    task.done = True
-    return task
+def mark_done(tasks: list[Task], task_id: int) -> Task | None:
+    """Mark a task as done. Return None if the id does not exist."""
+    for task in tasks:
+        if task.id == task_id:
+            task.done = True
+            return task
+    return None
 
 
 def remove_task(tasks: list[Task], task_id: int) -> None:
@@ -49,7 +52,10 @@ def main(argv: list[str] | None = None) -> None:
         print(f"Added task {task.id}: {task.title}")
     elif args.command == "done":
         task = mark_done(tasks, args.id)
-        print(f"Task {task.id} done.")
+        if task is None:
+            print(f"No task with id {args.id}.")
+        else:
+            print(f"Task {task.id} done.")
     elif args.command == "remove":
         remove_task(tasks, args.id)
         print(f"Task {args.id} removed.")

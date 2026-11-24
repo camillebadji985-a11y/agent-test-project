@@ -1,4 +1,4 @@
-from todo.cli import add_task, mark_done, remove_task
+from todo.cli import add_task, clear_done, mark_done, remove_task
 from todo.storage import load_tasks, save_tasks
 
 
@@ -25,3 +25,12 @@ def test_save_and_load(tmp_path):
     add_task(tasks, "x")
     save_tasks(path, tasks)
     assert load_tasks(path)[0].title == "x"
+
+
+def test_clear_done():
+    tasks = []
+    add_task(tasks, "a")
+    add_task(tasks, "b")
+    tasks[0].done = True
+    assert clear_done(tasks) == 1
+    assert [t.title for t in tasks] == ["b"]

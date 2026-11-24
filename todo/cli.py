@@ -24,6 +24,13 @@ def remove_task(tasks: list[Task], task_id: int) -> None:
     tasks[:] = [t for t in tasks if t.id != task_id]
 
 
+def clear_done(tasks: list[Task]) -> int:
+    """Remove all finished tasks and return how many were removed."""
+    before = len(tasks)
+    tasks[:] = [t for t in tasks if not t.done]
+    return before - len(tasks)
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="todo", description="A small to-do list manager")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -34,6 +41,7 @@ def main(argv: list[str] | None = None) -> None:
     p_done.add_argument("id", type=int)
     p_rm = sub.add_parser("remove", help="remove a task")
     p_rm.add_argument("id", type=int)
+    sub.add_parser("clear", help="remove all finished tasks")
     args = parser.parse_args(argv)
 
     path = get_data_file()
@@ -53,5 +61,9 @@ def main(argv: list[str] | None = None) -> None:
     elif args.command == "remove":
         remove_task(tasks, args.id)
         print(f"Task {args.id} removed.")
+
+    elif args.command == "clear":
+        count = clear_done(tasks)
+        print(f"Removed {count} finished task(s).")
 
     save_tasks(path, tasks)
